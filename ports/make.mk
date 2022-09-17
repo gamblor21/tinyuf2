@@ -30,7 +30,7 @@ __check_defined = \
 #-------------- Select the board to build for. ------------
 
 # PORT is default to directory name containing the Makefile
-# can be set manually by custome build such as flash_nuke
+# can be set manually by custom build such as flash_nuke
 PORT ?= $(notdir $(shell pwd))
 PORT_DIR = ports/$(PORT)
 BOARD_DIR = $(PORT_DIR)/boards/$(BOARD)
@@ -51,7 +51,7 @@ endif
 BUILD = _build/$(BOARD)
 BIN = $(TOP)/$(PORT_DIR)/_bin/$(BOARD)
 
-# can be set manually by custome build such as flash_nuke
+# can be set manually by custom build such as flash_nuke
 OUTNAME ?= tinyuf2-$(BOARD)
 
 # UF2 version with git tag and submodules
@@ -74,16 +74,22 @@ else
 
 # Bootloader src, board folder and TinyUSB stack
 SRC_C += \
-  $(subst $(TOP)/,,$(wildcard $(TOP)/src/*.c)) \
+  src/ghostfat.c \
+  src/images.c \
+  src/main.c \
+  src/msc.c \
+  src/screen.c \
+  src/usb_descriptors.c \
   $(subst $(TOP)/,,$(wildcard $(TOP)/$(BOARD_DIR)/*.c))
+
+endif # BUILD_APPLICATION
 
 # Include
 INC += \
   $(TOP)/src \
+  $(TOP)/src/favicon \
   $(TOP)/$(PORT_DIR) \
   $(TOP)/$(BOARD_DIR)
-
-endif # BUILD_APPLICATION
 
 #-------------- TinyUSB --------------
 # skip tinyusb src if building application such as erase firmware
@@ -103,10 +109,7 @@ SRC_C += \
 	$(TINYUSB_DIR)/class/cdc/cdc_device.c \
 	$(TINYUSB_DIR)/class/dfu/dfu_rt_device.c \
 	$(TINYUSB_DIR)/class/hid/hid_device.c \
-	$(TINYUSB_DIR)/class/midi/midi_device.c \
 	$(TINYUSB_DIR)/class/msc/msc_device.c \
-	$(TINYUSB_DIR)/class/net/net_device.c \
-	$(TINYUSB_DIR)/class/usbtmc/usbtmc_device.c \
 	$(TINYUSB_DIR)/class/vendor/vendor_device.c
 
 INC += $(TOP)/$(TINYUSB_DIR)
